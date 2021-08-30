@@ -1,17 +1,29 @@
 package com.reddit.reddit.controller;
 
 import com.reddit.reddit.dto.RegisterRequest;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.reddit.reddit.service.AuthService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import lombok.AllArgsConstructor;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("api/auth")
+@AllArgsConstructor
 public class AuthController {
+    private final AuthService authService;
 
     @PostMapping("/signup")
-    public void  signup (@RequestBody RegisterRequest registerRequest){
+    public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {
+        authService.signup(registerRequest);
+        return new ResponseEntity<>("User Registration Successful",
+                OK);
+    }
 
+
+    @GetMapping("accountVerification/{token}")
+    public ResponseEntity<String> verifyAccount(@PathVariable String token) {
+        authService.verifyAccount(token);
+        return new ResponseEntity<>("Account Activated Successfully", OK);
     }
 }
